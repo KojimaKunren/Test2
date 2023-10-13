@@ -49,12 +49,12 @@ def createObj():
         for m in range(1, 5, 1):
             posX = int(random.randint(1, W / 4)) + ((W / 4) * (n - 1))
             posY = int(random.randint(1, H / 4)) + ((H / 4) * (m - 1))
-            print(posX)
-            print(posY)
             target = Target(posX, posY, 5, img)
             cvs.create_image(posX, posY, image=target.img, tag=f"TAG{countTag}")
             countTag += 1
             print(f"TAG{countTag}")
+            print(f"createPositionX:{posX}")
+            print(f"createPositionY:{posY}")
             targetList.append(target)
 
 
