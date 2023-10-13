@@ -25,17 +25,17 @@ def targetDestroy():
         if (n.posX - n.size) <= mouseX <= (n.posX + n.size) and (
             n.posY - n.size
         ) <= mouseY <= (n.posY + n.size):
-            print(f"TAG{count}")
+            print(f"TAG:{n.tag}")
             print(f"mouseX:{mouseX}")
             print(f"mouseY:{mouseY}")
             print(f"targetX-:{n.posX - n.size}")
             print(f"targetX+:{n.posX + n.size}")
             print(f"targetY-:{n.posY - n.size}")
             print(f"targetY+:{n.posY + n.size}")
-            tar = targetList.pop(count)
-            print(f"targetpositionX:{tar.posX}")
-            print(f"targetpositionY:{tar.posY}")
-            cvs.delete(f"TAG{count}")
+            cvs.delete(n.tag)
+            targetList.pop(count)
+            if len(targetList) <= 0:
+                print("List is Empty")
             break
         else:
             count += 1
@@ -49,7 +49,7 @@ def createObj():
         for m in range(1, 5, 1):
             posX = int(random.randint(1, W / 4)) + ((W / 4) * (n - 1))
             posY = int(random.randint(1, H / 4)) + ((H / 4) * (m - 1))
-            target = Target(posX, posY, 5, img)
+            target = Target(posX, posY, 5, img, tag=f"TAG{countTag}")
             cvs.create_image(posX, posY, image=target.img, tag=f"TAG{countTag}")
             countTag += 1
             print(f"TAG{countTag}")
@@ -59,11 +59,12 @@ def createObj():
 
 
 class Target:
-    def __init__(self, posX=0, posY=0, size=0, img="img"):
+    def __init__(self, posX=0, posY=0, size=0, img="img", tag="tag"):
         self.posX = posX
         self.posY = posY
         self.size = size
         self.img = img
+        self.tag = tag
 
 
 root = tk.Tk()
