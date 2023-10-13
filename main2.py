@@ -26,15 +26,15 @@ def targetDestroy():
             n.posY - n.size
         ) <= mouseY <= (n.posY + n.size):
             print(f"TAG{count}")
-            print(mouseX)
-            print(mouseY)
-            print(n.posX - n.size)
-            print(n.posX + n.size)
-            print(n.posY - n.size)
-            print(n.posY + n.size)
+            print(f"mouseX:{mouseX}")
+            print(f"mouseY:{mouseY}")
+            print(f"targetX-:{n.posX - n.size}")
+            print(f"targetX+:{n.posX + n.size}")
+            print(f"targetY-:{n.posY - n.size}")
+            print(f"targetY+:{n.posY + n.size}")
             tar = targetList.pop(count)
-            print(tar.posX)
-            print(tar.posY)
+            print(f"targetpositionX:{tar.posX}")
+            print(f"targetpositionY:{tar.posY}")
             cvs.delete(f"TAG{count}")
             break
         else:
