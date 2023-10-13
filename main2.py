@@ -106,14 +106,14 @@ img3 = tk.PhotoImage(file="Test2/image/obj3.png")
 img4 = tk.PhotoImage(file="Test2/image/obj4.png")
 img5 = tk.PhotoImage(file="Test2/image/obj5.png")
 
-target1 = TargetInfo("target1", 1, 400, image=img1)
-target2 = TargetInfo("target2", 2, 300, image=img2)
-target3 = TargetInfo("target3", 4, 150, image=img3)
-target4 = TargetInfo("target4", 8, 80, image=img4)
-target5 = TargetInfo("target5", 16, 20, image=img5)
+target1 = TargetInfo("target1", 1, 400, img=img1)
+target2 = TargetInfo("target2", 2, 300, img=img2)
+target3 = TargetInfo("target3", 4, 150, img=img3)
+target4 = TargetInfo("target4", 8, 80, img=img4)
+target5 = TargetInfo("target5", 16, 20, img=img5)
 targetInfoList = [target1, target2, target3, target4, target5]
 
 cvs.pack()
 
-createObj()
+createObj(targetNumber)
 root.mainloop()
