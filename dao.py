@@ -5,7 +5,7 @@ def connect():
     connection = pymysql.connect(
         host="localhost",
         user="root",
-        password="root",
+        password="zanpa_s",
         database="suicutgame",
         cursorclass=pymysql.cursors.DictCursor,
     )

@@ -12,6 +12,7 @@ targetInfoList = []
 targetNumber = 0
 targetNumberMax = 0
 scene = "title"
+imgMix = 0
 
 
 # マウスクリック
@@ -55,7 +56,7 @@ def targetDestroy():
             score += n.score
             # ターゲットアニメーション
             shake(n.tag)
-            time.sleep(0.1)
+            time.sleep(0.05)
             # ターゲット破壊
             cvs.delete(n.tag)
             # リストからターゲット削除
@@ -75,7 +76,7 @@ def targetDestroy():
 
 # ターゲット作成
 def createObj():
-    global posX, posY, targetList, targetInfoList, targetNumberMax, targetNumber
+    global posX, posY, targetList, targetInfoList, targetNumberMax, targetNumber,imgMix
     countTag = 0  # タグ付け用カウント
     targetNumberMax = len(targetInfoList)
     cvs.delete("all")
@@ -90,9 +91,9 @@ def createObj():
             currentTarget.size,
             currentTarget.score,
             currentTarget.img,
-            tag=f"TAG{countTag}",
+            tag=f"{currentTarget.name}{countTag}",
         )
-        cvs.create_image(W / 2, H / 2, image=currentTarget.img, tag=f"TAG{countTag}")
+        cvs.create_image(W / 2, H / 2, image=currentTarget.img, tag=f"{currentTarget.name}{countTag}")
         targetList.append(target)
     elif currentNum == 2:  # Target2の生成
         for n in range(currentNum):
@@ -108,9 +109,9 @@ def createObj():
                 currentTarget.size,
                 currentTarget.score,
                 currentTarget.img,
-                tag=f"TAG{countTag}",
+                tag=f"{currentTarget.name}{countTag}",
             )
-            cvs.create_image(posX, posY, image=currentTarget.img, tag=f"TAG{countTag}")
+            cvs.create_image(posX, posY, image=currentTarget.img, tag=f"{currentTarget.name}{countTag}")
             targetList.append(target)
             countTag += 1
     elif 2 < currentNum <= targetInfoList[-1].num:  # Target3以降の生成
@@ -125,16 +126,24 @@ def createObj():
                 posY = int(random.randint(currentTarget.size, H / k)) + ((H / k) * m)
                 if posY + currentTarget.size > H:
                     posY = H - currentTarget.size
+                
+                #img5ランダム設定
+                if currentTarget.name == "target5":
+                        imgMix = random.randrange(len(imgList))
+                        currentTarget.img = imgList[imgMix]
+                
+                #ターゲット生成
                 target = Target(
                     posX,
                     posY,
                     currentTarget.size,
                     currentTarget.score,
                     currentTarget.img,
-                    tag=f"TAG{countTag}",
+                    tag=f"{currentTarget.name}{countTag}",
                 )
+                
                 cvs.create_image(
-                    posX, posY, image=currentTarget.img, tag=f"TAG{countTag}"
+                    posX, posY, image=currentTarget.img, tag=f"{currentTarget.name}{countTag}"
                 )
                 targetList.append(target)
                 countTag += 1
@@ -189,7 +198,9 @@ img1 = tk.PhotoImage(file="Test2/image/obj1.png")
 img2 = tk.PhotoImage(file="Test2/image/obj2.png")
 img3 = tk.PhotoImage(file="Test2/image/obj3.png")
 img4 = tk.PhotoImage(file="Test2/image/obj4.png")
-img5 = tk.PhotoImage(file="Test2/image/obj6.png")
+img5 = tk.PhotoImage(file="Test2/image/obj5.png")
+img5_2=tk.PhotoImage(file="Test2/image/obj6.png")
+imgList=[img5,img5_2]
 
 
 target1 = TargetInfo("target1", 1, 1, 400, img1)

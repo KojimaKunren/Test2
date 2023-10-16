@@ -90,12 +90,11 @@ def appendProverbsThird(num, url, name):
 def displayProverb(proverbsList):
     global listNum
     mainText = "aaa"
-    listNum = random.randint(0, len(proverbsList))
-    print(listNum)
-    # wordNum = random.randint(0, len(proverbsList[listNum]))
-    # displayname = proverbsList[listNum][wordNum].name
-    # displayword = proverbsList[listNum][wordNum].word
-    # mainText = f"{displayname}/n{displayword}"
+    listNum = random.randrange(len(proverbsList))
+    wordNum = random.randrange(len(proverbsList[listNum]))
+    displayname = proverbsList[listNum][wordNum].name
+    displayword = proverbsList[listNum][wordNum].word
+    mainText = f"{displayname}/n{displayword}"
     return mainText
 
 
