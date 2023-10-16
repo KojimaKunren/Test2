@@ -1,5 +1,6 @@
 import tkinter as tk
 import random
+import time
 
 W, H = 1280, 720
 num = 16
@@ -54,6 +55,7 @@ def targetDestroy():
             score += n.score
             # ターゲットアニメーション
             shake(n.tag)
+            time.sleep(0.1)
             # ターゲット破壊
             cvs.delete(n.tag)
             # リストからターゲット削除
@@ -141,13 +143,13 @@ def createObj():
 # ターゲット右揺れ
 def moveRight(tag):
     cvs.move(tag, 0.1, 0)
-    cvs.after(50, moveLeft(tag))
+    cvs.after(50, lambda: moveLeft(tag))
 
 
 # ターゲット左揺れ
 def moveLeft(tag):
     cvs.move(tag, -0.1, 0)
-    cvs.after(50, moveRight)
+    cvs.after(50, lambda: moveRight(tag))
 
 
 # ターゲット左右揺れ
