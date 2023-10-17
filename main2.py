@@ -9,6 +9,7 @@ mouseX, mouseY = 0, 0
 score, timer = 0, 180
 targetList = []
 targetInfoList = []
+targetShakeList = []
 targetNumber = 0
 targetNumberMax = 0
 scene = "title"
@@ -54,13 +55,8 @@ def targetDestroy():
         ) <= mouseY <= (n.posY + n.size):
             # スコアカウント
             score += n.score
-            # ターゲットアニメーション
-            shake(n.tag)
-            time.sleep(0.05)
-            # ターゲット破壊
-            cvs.delete(n.tag)
-            # リストからターゲット削除
-            targetList.pop(count)
+            targetShakeList.append(targetList.pop(count))
+            shakeTarget()
             # ターゲットリストのカウントアップ
             if len(targetList) <= 0:
                 if (targetNumber + 1) < targetNumberMax:
@@ -72,6 +68,17 @@ def targetDestroy():
             break
         else:
             count += 1
+
+def shakeTarget():
+        global targetShakeList
+        # ターゲットアニメーション
+        for n in targetShakeList:
+            shake(n.tag)
+            n.after(10,lambda:cvs.delete(n.tag))
+            # ターゲット破壊
+            
+            # リストからターゲット削除
+
 
 
 # ターゲット作成
@@ -151,13 +158,13 @@ def createObj():
 
 # ターゲット右揺れ
 def moveRight(tag):
-    cvs.move(tag, 0.1, 0)
+    cvs.move(tag, 0.2, 0)
     cvs.after(50, lambda: moveLeft(tag))
 
 
 # ターゲット左揺れ
 def moveLeft(tag):
-    cvs.move(tag, -0.1, 0)
+    cvs.move(tag, -0.2, 0)
     cvs.after(50, lambda: moveRight(tag))
 
 

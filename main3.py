@@ -12,15 +12,9 @@ def text(x, y, text, size, color):
     root.create_text(x, y, text=text, font=fontC, fill=color)
 
 
-def initProverbs():
-    appendProverbsSecond(0, url1, "Oldman")  # APIから情報を取得
-    appendProverbs(1, url2, "Scientist")
-    appendProverbsFirst(2, url3, "OldWoman")
-    appendProverbsThird(3, url4, "Boy")
-
 
 def main():
-    displayProverb(proverbsList)
+    displayProverb()
     frame2.place(anchor="center", x=W / 2, y=H / 2)  # frame配置
     mainLabel.place(anchor="sw", x=210, y=700, relwidth=0.8, relheight=0.3)
     faceCVS.place(
@@ -38,8 +32,8 @@ def destroy():
 
 
 def replace():
-    mainLabel["text"] = displayProverb(proverbsList)
-    faceCVS.create_image(80, 110, image=actualFaceImg)
+    mainLabel["text"] = displayProverb()
+    faceCVS.create_image(80, 110, image=faceImgList[listNum])
     frame2.place(anchor="center", x=W / 2, y=H / 2)
     root.after(2000, destroy)
 
@@ -50,51 +44,51 @@ class Proverb:
         self.word = word
 
 
-def appendProverbs(num, url, name):
-    for n in range(10):
+def appendProverbs(url, name):
         res = requests.get(url)
         data = json.loads(res.text)
-        proverbsList[num].append(Proverb(name, data["text"]))
-        print(proverbsList[num][n].word)
+        proverb=Proverb(name, data["text"])
+        return proverb
 
 
-def appendProverbsFirst(num, url, name):
-    for n in range(10):
+def appendProverbsFirst(url, name):
         res = requests.get(url)
         data = json.loads(res.text)
         worddata = data["slip"]["advice"]
-        proverbsList[num].append(Proverb(name, worddata))
-        print(proverbsList[num][n].word)
+        proverb=Proverb(name, worddata)
+        return proverb
 
 
-def appendProverbsSecond(num, url, name):
-    for n in range(10):
+def appendProverbsSecond(url, name):
         res = requests.get(url)
         data = json.loads(res.text)
         setup = data["setup"]
         punchline = data["punchline"]
-        texts = setup + "/n" + punchline
-        proverbsList[num].append(Proverb(name, texts))
-        print(proverbsList[num][n].word)
+        texts = f"{setup} \n{punchline}"
+        proverb=Proverb(name, texts)
+        return proverb
 
 
-def appendProverbsThird(num, url, name):
-    for n in range(10):
+def appendProverbsThird(url, name):
         res = requests.get(url)
         data = json.loads(res.text)
-        proverbsList[num].append(Proverb(name, data["activity"]))
-        print(proverbsList[num][n].word)
+        proverb=Proverb(name, data["activity"])
+        return proverb
 
 
 # テキスト表記のための乱数、テキスト作成
-def displayProverb(proverbsList):
+def displayProverb():
     global listNum
-    mainText = "aaa"
-    listNum = random.randrange(len(proverbsList))
-    wordNum = random.randrange(len(proverbsList[listNum]))
-    displayname = proverbsList[listNum][wordNum].name
-    displayword = proverbsList[listNum][wordNum].word
-    mainText = f"{displayname}/n{displayword}"
+    listNum = random.randrange(len(faceImgList))
+    if listNum == 0:
+        proverb=appendProverbsSecond(url1, "Oldman")  # APIから情報を取得
+    elif listNum == 1:
+        proverb=appendProverbs(url2, "Scientist")
+    elif listNum == 2:
+        proverb=appendProverbsFirst(url3, "OldWoman")
+    elif listNum == 3:
+        proverb=appendProverbsThird(url4, "Boy")  
+    mainText = f"{proverb.name}\n{proverb.word}"
     return mainText
 
 
@@ -114,33 +108,25 @@ faceImg4 = tk.PhotoImage(file="Test2/image/boy.png")
 faceImgList = [faceImg1, faceImg2, faceImg3, faceImg4]
 
 
-proverbs1 = []
-proverbs2 = []
-proverbs3 = []
-proverbs4 = []
-
-proverbsList = [proverbs1, proverbs2, proverbs3, proverbs4]
+url1 = "https://official-joke-api.appspot.com/jokes/random"
+url2 = "http://numbersapi.com/random/year?json"
+url3 = "https://api.adviceslip.com/advice"
+url4 = "https://www.boredapi.com/api/activity/"
 
 mainLabel = tk.Label(
     frame2,
     width=1025,
     height=220,
     compound=tk.CENTER,
-    text=displayProverb(proverbsList),
+    text=displayProverb(),
     image=frameImg,
     fg="red",
     font=("Family", 20),
 )
 faceCVS = tk.Canvas(frame2, width=160, height=220)
-actualFaceImg = faceImgList[listNum]
-faceCVS.create_image(80, 110, image=actualFaceImg)
+# faceCVS.create_image(80, 110, image=faceImgList[listNum])
 
-url1 = "https://official-joke-api.appspot.com/jokes/random"
-url2 = "http://numbersapi.com/random/year?json"
-url3 = "https://api.adviceslip.com/advice"
-url4 = "https://www.boredapi.com/api/activity/"
 
-initProverbs()
 root.after(3000, main)
 root.after(6000, destroy)
 root.mainloop()
