@@ -1,6 +1,7 @@
 import tkinter as tk
 import random
-import time
+import pygame
+from pygame.locals import *
 
 W, H = 1280, 720
 num = 16
@@ -14,6 +15,18 @@ targetNumber = 0
 targetNumberMax = 0
 scene = "title"
 imgMix = 0
+
+
+# pygame初期設定
+pygame.init()
+
+# 効果音の設定
+se = None
+try:
+    se = pygame.mixer.Sound("Test2/bgm/maou_se_system41.mp3")
+except:
+    pass
+se.set_volume(0.2)
 
 
 # マウスクリック
@@ -55,6 +68,7 @@ def targetDestroy():
         ) <= mouseY <= (n.posY + n.size):
             # スコアカウント
             score += n.score
+            se.play()
             targetShakeList.append(targetList.pop(count))
             shakeTarget()
             # ターゲットリストのカウントアップ
@@ -69,21 +83,18 @@ def targetDestroy():
         else:
             count += 1
 
-def shakeTarget():
-        global targetShakeList
-        # ターゲットアニメーション
-        for n in targetShakeList:
-            shake(n.tag)
-            n.after(10,lambda:cvs.delete(n.tag))
-            # ターゲット破壊
-            
-            # リストからターゲット削除
 
+def shakeTarget():
+    global targetShakeList
+    # ターゲットアニメーション
+    for n in targetShakeList:
+        shake(n.tag)
+        cvs.after(500, lambda: cvs.delete(n.tag))
 
 
 # ターゲット作成
 def createObj():
-    global posX, posY, targetList, targetInfoList, targetNumberMax, targetNumber,imgMix
+    global posX, posY, targetList, targetInfoList, targetNumberMax, targetNumber, imgMix
     countTag = 0  # タグ付け用カウント
     targetNumberMax = len(targetInfoList)
     cvs.delete("all")
@@ -100,7 +111,9 @@ def createObj():
             currentTarget.img,
             tag=f"{currentTarget.name}{countTag}",
         )
-        cvs.create_image(W / 2, H / 2, image=currentTarget.img, tag=f"{currentTarget.name}{countTag}")
+        cvs.create_image(
+            W / 2, H / 2, image=currentTarget.img, tag=f"{currentTarget.name}{countTag}"
+        )
         targetList.append(target)
     elif currentNum == 2:  # Target2の生成
         for n in range(currentNum):
@@ -118,7 +131,12 @@ def createObj():
                 currentTarget.img,
                 tag=f"{currentTarget.name}{countTag}",
             )
-            cvs.create_image(posX, posY, image=currentTarget.img, tag=f"{currentTarget.name}{countTag}")
+            cvs.create_image(
+                posX,
+                posY,
+                image=currentTarget.img,
+                tag=f"{currentTarget.name}{countTag}",
+            )
             targetList.append(target)
             countTag += 1
     elif 2 < currentNum <= targetInfoList[-1].num:  # Target3以降の生成
@@ -133,13 +151,13 @@ def createObj():
                 posY = int(random.randint(currentTarget.size, H / k)) + ((H / k) * m)
                 if posY + currentTarget.size > H:
                     posY = H - currentTarget.size
-                
-                #img5ランダム設定
+
+                # img5ランダム設定
                 if currentTarget.name == "target5":
-                        imgMix = random.randrange(len(imgList))
-                        currentTarget.img = imgList[imgMix]
-                
-                #ターゲット生成
+                    imgMix = random.randrange(len(imgList))
+                    currentTarget.img = imgList[imgMix]
+
+                # ターゲット生成
                 target = Target(
                     posX,
                     posY,
@@ -148,30 +166,23 @@ def createObj():
                     currentTarget.img,
                     tag=f"{currentTarget.name}{countTag}",
                 )
-                
+
                 cvs.create_image(
-                    posX, posY, image=currentTarget.img, tag=f"{currentTarget.name}{countTag}"
+                    posX,
+                    posY,
+                    image=currentTarget.img,
+                    tag=f"{currentTarget.name}{countTag}",
                 )
                 targetList.append(target)
                 countTag += 1
 
 
-# ターゲット右揺れ
-def moveRight(tag):
-    cvs.move(tag, 0.2, 0)
-    cvs.after(50, lambda: moveLeft(tag))
-
-
-# ターゲット左揺れ
-def moveLeft(tag):
-    cvs.move(tag, -0.2, 0)
-    cvs.after(50, lambda: moveRight(tag))
-
-
-# ターゲット左右揺れ
+# ターゲット揺れ
 def shake(tag):
-    for _ in range(5):
-        moveRight(tag)
+    cvs.move(tag, 0.1, 0)
+    for _ in range(10):
+        cvs.move(tag, -0.2, 0)
+        cvs.after(50, lambda: cvs.move(tag, 0.2, 0))
 
 
 # ターゲットインスタンス
@@ -206,8 +217,8 @@ img2 = tk.PhotoImage(file="Test2/image/obj2.png")
 img3 = tk.PhotoImage(file="Test2/image/obj3.png")
 img4 = tk.PhotoImage(file="Test2/image/obj4.png")
 img5 = tk.PhotoImage(file="Test2/image/obj5.png")
-img5_2=tk.PhotoImage(file="Test2/image/obj6.png")
-imgList=[img5,img5_2]
+img5_2 = tk.PhotoImage(file="Test2/image/obj6.png")
+imgList = [img5, img5_2]
 
 
 target1 = TargetInfo("target1", 1, 1, 400, img1)

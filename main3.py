@@ -2,6 +2,7 @@ import tkinter as tk
 import random
 import requests
 import json
+import textwrap
 
 W, H = 1280, 720
 listNum = 0
@@ -12,11 +13,11 @@ def text(x, y, text, size, color):
     root.create_text(x, y, text=text, font=fontC, fill=color)
 
 
-
 def main():
-    displayProverb()
+    global listNum
     frame2.place(anchor="center", x=W / 2, y=H / 2)  # frame配置
     mainLabel.place(anchor="sw", x=210, y=700, relwidth=0.8, relheight=0.3)
+    faceCVS.create_image(80, 110, image=faceImgList[listNum])
     faceCVS.place(
         anchor="sw",
         x=50,
@@ -24,18 +25,18 @@ def main():
     )
 
 
-def destroy():
+def destroyFrame():
     frame2.place_forget()
     faceCVS.delete()
     replaceSecond = random.randint(1, 10) * 1000
-    root.after(replaceSecond, replace)
+    root.after(replaceSecond, replaceFrame)
 
 
-def replace():
+def replaceFrame():
     mainLabel["text"] = displayProverb()
     faceCVS.create_image(80, 110, image=faceImgList[listNum])
     frame2.place(anchor="center", x=W / 2, y=H / 2)
-    root.after(2000, destroy)
+    root.after(2000, destroyFrame)
 
 
 class Proverb:
@@ -45,35 +46,36 @@ class Proverb:
 
 
 def appendProverbs(url, name):
-        res = requests.get(url)
-        data = json.loads(res.text)
-        proverb=Proverb(name, data["text"])
-        return proverb
+    res = requests.get(url)
+    data = json.loads(res.text)
+    textwrap.fill(data["text"], 30)
+    proverb = Proverb(name, data["text"])
+    return proverb
 
 
 def appendProverbsFirst(url, name):
-        res = requests.get(url)
-        data = json.loads(res.text)
-        worddata = data["slip"]["advice"]
-        proverb=Proverb(name, worddata)
-        return proverb
+    res = requests.get(url)
+    data = json.loads(res.text)
+    worddata = data["slip"]["advice"]
+    proverb = Proverb(name, worddata)
+    return proverb
 
 
 def appendProverbsSecond(url, name):
-        res = requests.get(url)
-        data = json.loads(res.text)
-        setup = data["setup"]
-        punchline = data["punchline"]
-        texts = f"{setup} \n{punchline}"
-        proverb=Proverb(name, texts)
-        return proverb
+    res = requests.get(url)
+    data = json.loads(res.text)
+    setup = data["setup"]
+    punchline = data["punchline"]
+    texts = f"{setup} \n{punchline}"
+    proverb = Proverb(name, texts)
+    return proverb
 
 
 def appendProverbsThird(url, name):
-        res = requests.get(url)
-        data = json.loads(res.text)
-        proverb=Proverb(name, data["activity"])
-        return proverb
+    res = requests.get(url)
+    data = json.loads(res.text)
+    proverb = Proverb(name, data["activity"])
+    return proverb
 
 
 # テキスト表記のための乱数、テキスト作成
@@ -81,13 +83,13 @@ def displayProverb():
     global listNum
     listNum = random.randrange(len(faceImgList))
     if listNum == 0:
-        proverb=appendProverbsSecond(url1, "Oldman")  # APIから情報を取得
+        proverb = appendProverbsSecond(url1, "Oldman")  # APIから情報を取得
     elif listNum == 1:
-        proverb=appendProverbs(url2, "Scientist")
+        proverb = appendProverbs(url2, "Scientist")
     elif listNum == 2:
-        proverb=appendProverbsFirst(url3, "OldWoman")
+        proverb = appendProverbsFirst(url3, "OldWoman")
     elif listNum == 3:
-        proverb=appendProverbsThird(url4, "Boy")  
+        proverb = appendProverbsThird(url4, "Boy")
     mainText = f"{proverb.name}\n{proverb.word}"
     return mainText
 
@@ -124,9 +126,8 @@ mainLabel = tk.Label(
     font=("Family", 20),
 )
 faceCVS = tk.Canvas(frame2, width=160, height=220)
-# faceCVS.create_image(80, 110, image=faceImgList[listNum])
 
 
 root.after(3000, main)
-root.after(6000, destroy)
+root.after(6000, destroyFrame)
 root.mainloop()
